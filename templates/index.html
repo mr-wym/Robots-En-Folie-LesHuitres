@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Projet - Vivemarine</title>
+    <link rel="stylesheet" href="static/css/style.css">
+</head>
+<body>
+    <h1>Projet</h1>
+    <p>Bienvenue dans la section HTML !</p>
+    <p>Cette section est dédiée à la gestion des données.</p>
+
+    <p>Éléments concernés :</p>
+    <ul>
+        <li>Capteur de distance :</li>
+        <li>KM/H :</li>
+        <li>Ouverture de la pince :</li>
+        <li>Capteur de ligne noire :</li>
+    </ul>
+
+    <h1>Données reçues</h1>
+    <ul>
+        <li><strong>Vitesse :</strong> {{ speed }} m/s</li>
+        <li><strong>Distance ultrasons :</strong> {{ distance }} cm</li>
+        <li><strong>Orientation :</strong> {{ orientation }} °</li>
+        <li><strong>Pince :</strong> {{ "Ouverte" if gripper else "Fermée" }}</li>
+        <li><strong>Horodatage :</strong> {{ timestamp }}</li>
+    </ul>
+
+
+    <button onclick="alert('Fonctionnalité à venir !')">Fonctionnalité à venir</button>
+
+    <footer>
+        <p>&copy; 2027 Vivemarine</p>
+        <p>Contactez-nous à <a href="mailto:contact@votreoscar.com">contact@votreOscar.com</a></p>
+    </footer>
+</body>
+</html>
