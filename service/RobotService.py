@@ -1,8 +1,30 @@
-from repository import RobotRepository
+from repository.RobotRepository import getValeurs, getCommandes, getRobots
 
-def process_data(data: dict):
-    print(f"[Service] Data received at {data['timestamp']}")
-    RobotRepository.save_data(data)
+def fetchValeurs():
+    rows = getValeurs()
+    return [
+        {
+            "id": row[0],
+            "speed": row[1],
+            "distance": row[2],
+        } for row in rows
+    ]
 
-def get_data():
-    return RobotRepository.get_latest_data()
+def fetchCommandes():
+    rows = getCommandes()
+    return [
+        {
+            "id": row[0],
+            "datetime": row[1],
+            "commande": row[2],
+        } for row in rows
+    ]
+
+def fetchRobots():
+    rows = getRobots()
+    return [
+        {
+            "id": row[0],
+            "macadress": row[1],
+        } for row in rows
+    ]

@@ -1,27 +1,22 @@
 from fastapi import APIRouter, Request
+from flask import jsonify
 from fastapi.responses import HTMLResponse
+from service.RobotService import fetchValeurs, fetchCommandes, fetchRobots
+from repository.RobotRepository import getValeurs
 
 router = APIRouter()
 
 
-@router.get("/", response_class = HTMLResponse)
-async def root():
-    with open('templates/index.html', 'r') as file:
-        return file.read()
-
-    return {}  # Retour vide
+@router.get("/api/valeurs")
+async def get_valeurs_endpoint():
+    return {"rows": fetchValeurs()}
 
 
-@router.post("/robot/data")
-async def receive_robot_data(request: Request):
-    body = await request.json()
-
-    # Extraction manuelle (sans modèle)
-    speed = body.get("speed")
-    distance = body.get("distance")
-    orientation = body.get("orientation")
-    gripper = body.get("gripper")
-    timestamp = body.get("timestamp")
+@router.get("/api/commandes")
+async def get_commandes_endpoint():
+    return {"rows": fetchCommandes()}
 
 
-    return {}  # Retour vide
+@router.get("/api/robots")
+async def get_robots_endpoint():
+    return {"rows": fetchRobots()}

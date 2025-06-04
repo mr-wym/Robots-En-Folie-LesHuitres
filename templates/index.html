@@ -3,13 +3,13 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Projet - Vivemarine</title>
+    <title>Projet - Vivemike</title>
     <link rel="stylesheet" href="static/css/style.css">
+    <script src="static/js/script.js" defer></script>
+
 </head>
 <body>
     <h1>Projet</h1>
-    <p>Bienvenue dans la section HTML !</p>
-    <p>Cette section est dédiée à la gestion des données.</p>
 
     <p>Éléments concernés :</p>
     <ul>
@@ -20,20 +20,26 @@
     </ul>
 
     <h1>Données reçues</h1>
-    <ul>
-        <li><strong>Vitesse :</strong> {{ speed }} m/s</li>
-        <li><strong>Distance ultrasons :</strong> {{ distance }} cm</li>
-        <li><strong>Orientation :</strong> {{ orientation }} °</li>
-        <li><strong>Pince :</strong> {{ "Ouverte" if gripper else "Fermée" }}</li>
-        <li><strong>Horodatage :</strong> {{ timestamp }}</li>
+
+    <ul id="robot-stats">
+        <li><strong>Capteur de ligne noire :</strong> <span id="line_value">...</span></li>
+        <li><strong>Capteur de distance :</strong> <span id="distance_value">...</span></li>
+        <li><strong>Vitesse :</strong> <span id="speed_value">...</span> m/s</li>
+        <li><strong>Pince :</strong> <span id="gripper_value">...</span></li>
     </ul>
+
+    <strong>Commandes :</strong> <span id="commandesList">...</span>
+    <br>
+    <strong>Liste des robots :</strong> <span id="robotsList">...</span>
+    <br>
 
 
     <button onclick="alert('Fonctionnalité à venir !')">Fonctionnalité à venir</button>
 
     <footer>
-        <p>&copy; 2027 Vivemarine</p>
+        <p>&copy; 2027 Vivemike</p>
         <p>Contactez-nous à <a href="mailto:contact@votreoscar.com">contact@votreOscar.com</a></p>
     </footer>
 </body>
 </html>
+
