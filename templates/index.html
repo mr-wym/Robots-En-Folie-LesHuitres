@@ -29,13 +29,14 @@
         <button type="submit">Ajouter Robot</button>
     </form>
 
+    <form id="commandeForm" onsubmit="initializeCommande(event)">
+        <label for="commande">Commande du robot :</label>
+        <input type="text" id="commande" name="commande" required>
+        <button type="submit">Enregistrer</button>
+    </form>
+
+
     <strong>Liste des robots :</strong> <span id="robotsList">...</span>
-
-
-    <br>
-    <br>
-
-  
 
     <button onclick="alert('Fonctionnalité à venir !')">Fonctionnalité à venir</button>
 

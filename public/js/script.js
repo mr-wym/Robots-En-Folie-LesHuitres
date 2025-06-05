@@ -12,24 +12,27 @@ fetch("/api/valeurs")
     .catch(error => {
         console.error("Erreur de récupération :", error);
     });
-    fetch("/api/commandes")
-        .then(response => response.json())
-        .then(data => {
-            const commandeList = document.getElementById("commandesList");
-            commandeList.innerHTML = ""; 
-            if (data.rows.length > 0) {
-                data.rows.forEach(commande => {
-                    const listItem = document.createElement("li");
-                    listItem.textContent = `${commande.commande || "Aucune commande disponible"}, ${commande.datetime || "Non disponible"}`;
-                    commandeList.appendChild(listItem);
-                });
-            } else {
-                commandeList.textContent = "Aucune commande trouvée";
-            }
-        })
-        .catch(error => {
-            console.error("Erreur de récupération :", error);
-        });
+
+fetch("/api/commandes")
+    .then(response => response.json())
+    .then(data => {
+        const commandeList = document.getElementById("commandesList");
+        commandeList.innerHTML = ""; 
+        if (data.rows.length > 0) {
+            data.rows.sort((a, b) => new Date(b.datetime) - new Date(a.datetime));
+
+            data.rows.forEach(commande => {
+                const listItem = document.createElement("li");
+                listItem.textContent = `${commande.commande || "Aucune commande disponible"}, ${commande.datetime || "Non disponible"}`;
+                commandeList.appendChild(listItem);
+            });
+        } else {
+            commandeList.textContent = "Aucune commande trouvée";
+        }
+    })
+    .catch(error => {
+        console.error("Erreur de récupération :", error);
+    });
 
 fetch("/api/robots")
     .then(response => response.json())
@@ -86,6 +89,37 @@ async function initializeRobot(event) {
         } else if (response.status === 409) {
             const data = await response.json();
             alert(`Erreur : ${data.error}`);
+        } else {
+            alert('Erreur lors de l\'initialisation du robot.');
+        }
+    } catch (error) {
+        console.error('Erreur:', error);
+        alert('Une erreur est survenue.');
+    }
+}
+
+
+async function initializeCommande(event) {
+    event.preventDefault();
+    const commande = document.getElementById('commande').value;
+    const datetime = new Date().toISOString();
+    
+    try {
+        const response = await fetch('/api/commandeInitialize', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ 
+                commande: commande,
+                datetime: datetime
+            }),
+        });
+
+        if (response.ok) {
+            alert('Robot initialisé avec succès !');
+            document.getElementById('commandeForm').reset();
+            window.location.reload();
         } else {
             alert('Erreur lors de l\'initialisation du robot.');
         }
