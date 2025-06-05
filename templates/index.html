@@ -11,14 +11,6 @@
 <body>
     <h1>Projet</h1>
 
-    <p>Éléments concernés :</p>
-    <ul>
-        <li>Capteur de distance :</li>
-        <li>KM/H :</li>
-        <li>Ouverture de la pince :</li>
-        <li>Capteur de ligne noire :</li>
-    </ul>
-
     <h1>Données reçues</h1>
 
     <ul id="robot-stats">
@@ -29,10 +21,21 @@
     </ul>
 
     <strong>Commandes :</strong> <span id="commandesList">...</span>
-    <br>
+
+
+    <form id="macForm" onsubmit="initializeRobot(event)">
+        <label for="macAddress">Adresse MAC du robot :</label>
+        <input type="text" id="macAddress" name="macAddress" maxlength="17" required>
+        <button type="submit">Ajouter Robot</button>
+    </form>
+
     <strong>Liste des robots :</strong> <span id="robotsList">...</span>
+
+
+    <br>
     <br>
 
+  
 
     <button onclick="alert('Fonctionnalité à venir !')">Fonctionnalité à venir</button>
 
