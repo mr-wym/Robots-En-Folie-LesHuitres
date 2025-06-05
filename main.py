@@ -1,10 +1,14 @@
 from fastapi import FastAPI
 from fastapi.staticfiles import StaticFiles
-from controller import RobotController, mainController
+from controller import mainController
+from controller.api import RobotController, CommandeController, TelemetryController
 from database import database
 
 app = FastAPI()
 app.include_router(RobotController.router)
+app.include_router(CommandeController.router)
+app.include_router(TelemetryController.router)
+
 app.include_router(mainController.router)
 app.mount("/static", StaticFiles(directory="public"), name="static")
 
@@ -24,3 +28,4 @@ database.init_db()
 # un fichier valeurs repo qui fait que pour les valeurs
 # un fichier valeurs service qui fait que pour les valeurs
 # un fichier valeurs controller qui fait que pour les valeurs
+

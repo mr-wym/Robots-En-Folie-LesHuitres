@@ -1,6 +1,5 @@
 from fastapi import APIRouter
 from fastapi.responses import HTMLResponse
-from repository.RobotRepository import getValeurs
 
 router = APIRouter()
 

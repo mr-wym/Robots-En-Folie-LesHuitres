@@ -17,7 +17,7 @@ def init_db():
     """)
 
     cursor.execute("""
-        CREATE TABLE IF NOT EXISTS VALEURS (
+        CREATE TABLE IF NOT EXISTS TELEMETRIE (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
             speed FLOAT NOT NULL,
             distance FLOAT NOT NULL,
@@ -43,10 +43,10 @@ def init_db():
             ("2025-06-01 10:02:00", "STOP")
         ])
 
-    cursor.execute("SELECT COUNT(*) FROM VALEURS")
+    cursor.execute("SELECT COUNT(*) FROM TELEMETRIE")
     if cursor.fetchone()[0] == 0:
         cursor.executemany("""
-            INSERT INTO VALEURS (speed, distance, timestamp, pincevalue) VALUES (?, ?, ?, ?)
+            INSERT INTO TELEMETRIE (speed, distance, timestamp, pincevalue) VALUES (?, ?, ?, ?)
         """, [
             (1.5, 20.0, "2025-06-01 10:00:01", True),
             (1.7, 18.5, "2025-06-01 10:00:02", False),
