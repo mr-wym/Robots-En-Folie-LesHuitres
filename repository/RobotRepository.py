@@ -16,16 +16,16 @@ def setRobots(macAddress):
     conn = connectToDb()
     cursor = conn.cursor()
     cursor.execute("""
-        INSERT INTO ROBOTS (macadress) VALUES (?)
+        INSERT INTO ROBOTS (macaddress) VALUES (?)
     """, (macAddress,))
     conn.commit()
     conn.close()
 
-# fonctio qui vérifier si l'adresse max existe déjà dans la bd
+# fonction qui vérifier si l'adresse max existe déjà dans la bd
 def macAddressExists(macAddress):
     conn = connectToDb()
     cursor = conn.cursor()
-    cursor.execute("SELECT 1 FROM ROBOTS WHERE macadress = ?", (macAddress,))
+    cursor.execute("SELECT 1 FROM ROBOTS WHERE macaddress = ?", (macAddress,))
     exists = cursor.fetchone() is not None
     conn.close()
     return exists

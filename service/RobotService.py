@@ -7,6 +7,6 @@ def fetchRobots():
     return [
         {
             "id": row[0],
-            "macadress": row[1],
+            "macaddress": row[1],
         } for row in rows
     ]

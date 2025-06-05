@@ -26,8 +26,10 @@ async def set_robots_endpoint(request: Request):
 
         setRobots(macAddress)
         
-        return {"status": "success"}
+        return JSONResponse(status_code=201, content={"status": "Robot ajouté avec succès"})
+
 
     except Exception as e:
         print(f"[ERREUR] {e}")
         return JSONResponse(status_code=500, content={"error": str(e)})
+

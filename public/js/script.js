@@ -43,7 +43,7 @@ fetch("/api/robots")
             // const sortedRobots = data.rows.sort((a, b) => a.id - b.id);
             data.rows.forEach(robot => {
                 const listItem = document.createElement("li");
-                listItem.textContent = robot.macadress || "Adresse MAC non disponible";
+                listItem.textContent = robot.macaddress || "Adresse MAC non disponible";
                 robotsList.appendChild(listItem);
             });
         } else {
