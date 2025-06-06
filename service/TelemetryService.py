@@ -1,8 +1,8 @@
-from repository.TelemetryRepository import getValeurs
+from repository.TelemetryRepository import getTelemetry
 # ici mettre regle métier pour les valeurs, commandes et robots
 
-def fetchValeurs():
-    rows = getValeurs()
+def fetchTelemetry():
+    rows = getTelemetry()
     return [
         {
             "id": row[0],

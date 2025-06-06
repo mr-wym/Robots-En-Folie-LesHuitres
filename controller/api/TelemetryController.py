@@ -1,8 +1,8 @@
 from fastapi import APIRouter
-from service.TelemetryService import fetchValeurs
+from service.TelemetryService import fetchTelemetry
 
 router = APIRouter()
 
-@router.get("/api/valeurs")
+@router.get("/api/telemetry")
 async def get_valeurs_endpoint():
-    return {"rows": fetchValeurs()}
+    return {"rows": fetchTelemetry()}

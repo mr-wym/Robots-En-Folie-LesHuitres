@@ -1,4 +1,4 @@
-fetch("/api/valeurs")
+fetch("/api/telemetry")
     .then(response => response.json())
     .then(data => {
         if (data.rows.length > 0) {

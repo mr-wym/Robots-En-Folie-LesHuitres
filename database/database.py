@@ -30,7 +30,8 @@ def init_db():
     cursor.execute("""
         CREATE TABLE IF NOT EXISTS ROBOTS (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
-            macaddress TEXT NOT NULL
+            macaddress TEXT NOT NULL,
+            alias TEXT
         )
     """)
 
@@ -57,16 +58,16 @@ def init_db():
     cursor.execute("SELECT COUNT(*) FROM ROBOTS")
     if cursor.fetchone()[0] == 0:
         cursor.execute("""
-            INSERT INTO ROBOTS (macaddress) VALUES (?)
-        """, ("AA:BB:CC:DD:EE:FF",))
+            INSERT INTO ROBOTS (macaddress, alias) VALUES (?, ?)
+        """, ("AA:BB:CC:DD:EE:FF", "Robot1S"))
 
         cursor.execute("""
-            INSERT INTO ROBOTS (macaddress) VALUES (?)
-        """, ("AA:BB:CCsdfsdf:DD:EE:FF",))
+            INSERT INTO ROBOTS (macaddress, alias) VALUES (?, ?)
+        """, ("AA:BB:DD:DD:EE:FF", "Robot2S"))
 
         cursor.execute("""
-            INSERT INTO ROBOTS (macaddress) VALUES (?)
-        """, ("AA:BB:CC:DD:EEsdfsd:FF",))
+            INSERT INTO ROBOTS (macaddress, alias) VALUES (?, ?)
+        """, ("AA:BB:CC:DD:FF:FF", "Robot3S"))
 
 
     conn.commit()

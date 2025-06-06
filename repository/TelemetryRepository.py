@@ -2,7 +2,7 @@ from database.database import connectToDb
 
 
 # fonction qui récupère les valeurs pour le robot dans la bd
-def getValeurs():
+def getTelemetry():
     conn = connectToDb()
     cursor = conn.cursor()
     cursor.execute("SELECT * FROM TELEMETRIE")
@@ -12,7 +12,7 @@ def getValeurs():
     return rows
 
 # fonction qui initialise les valeurs pour le robot dans la bd
-def setValeurs():
+def setTelemetry():
     conn = connectToDb()
     cursor = conn.cursor()
     cursor.execute("""

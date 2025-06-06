@@ -4,6 +4,7 @@ from database.database import connectToDb
 # fonction qui récupère les commandes pour le robot dans la bd
 def getCommandes():
     # peut être ici rajouter récupérer les commandes pour un robot précis
+    # en fonction d'une variable et quand pas définie on renvoie tout les robots
     conn = connectToDb()
     cursor = conn.cursor()
     cursor.execute("SELECT * FROM COMMANDE")

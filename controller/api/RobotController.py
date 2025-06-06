@@ -15,16 +15,18 @@ async def set_robots_endpoint(request: Request):
     try:
         body = await request.json()
         macAddress = body.get("macAddress")
+        alias = body.get("alias")
         print(f"MAC Address reçue : {macAddress}")
+        print(f"Alias reçu : {alias}")
 
         if not macAddress:
             print("MAC manquante")
             return JSONResponse(status_code=400, content={"error": "macAddress manquant"})
 
-        if macAddressExists(macAddress):
-            return JSONResponse(status_code=409, content={"error": "Adresse MAC déjà enregistrée."})
+        if macAddressExists(macAddress, alias):
+            return JSONResponse(status_code=409, content={"error": "Adresse MAC ou Alias déjà utilisé."})
 
-        setRobots(macAddress)
+        setRobots(macAddress, alias)
         
         return JSONResponse(status_code=201, content={"status": "Robot ajouté avec succès"})
 

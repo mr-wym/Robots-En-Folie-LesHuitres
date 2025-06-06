@@ -12,20 +12,35 @@ def getRobots():
     return rows
 
 # fonction qui initialise les robots dans la bd
-def setRobots(macAddress):
+def setRobots(macAddress, alias):
     conn = connectToDb()
     cursor = conn.cursor()
     cursor.execute("""
-        INSERT INTO ROBOTS (macaddress) VALUES (?)
-    """, (macAddress,))
+        INSERT INTO ROBOTS (macaddress, alias) VALUES (?, ?)
+    """, (macAddress, alias, ))
     conn.commit()
     conn.close()
 
 # fonction qui vérifier si l'adresse max existe déjà dans la bd
-def macAddressExists(macAddress):
+def macAddressExists(macAddress, alias=None):
     conn = connectToDb()
     cursor = conn.cursor()
-    cursor.execute("SELECT 1 FROM ROBOTS WHERE macaddress = ?", (macAddress,))
+    if alias:
+        cursor.execute("SELECT 1 FROM ROBOTS WHERE macaddress = ? AND alias = ?", (macAddress, alias))
+    else:
+        cursor.execute("SELECT 1 FROM ROBOTS WHERE macaddress = ?", (macAddress,))
     exists = cursor.fetchone() is not None
     conn.close()
     return exists
+    # peut être au dessus rajouter le truc qui vérifier si l'alias existe déjà dans la bd
+
+def getMacAddressAlias(alias):
+    conn = connectToDb()
+    cursor = conn.cursor()
+    cursor.execute("SELECT macAddress FROM ROBOTS WHERE alias = ?", (alias,))
+    macAddress = cursor.fetchall()
+    conn.close()
+    if macAddress:
+        return macAddress[0]
+
+    return None
