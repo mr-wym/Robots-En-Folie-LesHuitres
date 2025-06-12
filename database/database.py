@@ -40,9 +40,9 @@ def init_db():
         cursor.executemany("""
             INSERT INTO COMMANDE (datetime, commande, macAddress) VALUES (?, ?, ?)
         """, [
-            ("2025-06-01 10:00:00", "START", "AA:BB:CC:DD:EE:FF"),
-            ("2025-06-01 10:01:00", "MOVE_FORWARD", "AA:BB:CC:DD:EE:FF"),
-            ("2025-06-01 10:02:00", "STOP", "AA:BB:CC:DD:EE:FF"),
+            ("2025-06-01 10:00:00", "cuberouge", "AA:BB:CC:DD:EE:FF"),
+            ("2025-06-01 10:01:00", "cubebleu", "AA:BB:CC:DD:EE:FF"),
+            ("2025-06-01 10:02:00", "cubejaune", "AA:BB:CC:DD:EE:FF"),
         ])
 
     cursor.execute("SELECT COUNT(*) FROM TELEMETRIE")
