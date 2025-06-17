@@ -1,32 +1,32 @@
 from urllib import request
 from fastapi import APIRouter, Request
 from fastapi.responses import JSONResponse
-from repository.RobotRepository import macAddressExists, setRobots
+from repository.RobotRepository import robotIdExists, setRobots
 from service.RobotService import fetchRobots
 
 router = APIRouter()
 
-@router.get("/api/robots")
+@router.get("/robots")
 async def get_robots_endpoint():
     return {"rows": fetchRobots()}
 
-@router.post("/api/robotInitialize")
+@router.post("/robotInitialize")
 async def set_robots_endpoint(request: Request):
     try:
         body = await request.json()
-        macAddress = body.get("macAddress")
+        robotId = body.get("macAddress")
         alias = body.get("alias")
-        print(f"MAC Address reçue : {macAddress}")
+        print(f"Id robot reçue : {robotId}")
         print(f"Alias reçu : {alias}")
 
-        if not macAddress:
+        if not robotId:
             print("MAC manquante")
-            return JSONResponse(status_code=400, content={"error": "macAddress manquant"})
+            return JSONResponse(status_code=400, content={"error": "robotId manquant"})
 
-        if macAddressExists(macAddress, alias):
+        if robotIdExists(robotId, alias):
             return JSONResponse(status_code=409, content={"error": "Adresse MAC ou Alias déjà utilisé."})
 
-        setRobots(macAddress, alias)
+        setRobots(robotId, alias)
         
         return JSONResponse(status_code=201, content={"status": "Robot ajouté avec succès"})
 

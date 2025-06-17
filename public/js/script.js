@@ -1,4 +1,4 @@
-fetch("/api/telemetry")
+fetch("/telemetry")
     .then(response => response.json())
     .then(data => {
         if (data.rows.length > 0) {
@@ -13,7 +13,7 @@ fetch("/api/telemetry")
         console.error("Erreur de récupération :", error);
     });
 
-fetch("/api/commandes")
+fetch("/missions")
     .then(response => response.json())
     .then(data => {
         const commandeList = document.getElementById("commandesList");
@@ -34,7 +34,7 @@ fetch("/api/commandes")
         console.error("Erreur de récupération :", error);
     });
 
-fetch("/api/robots")
+fetch("/robots")
     .then(response => response.json())
     .then(data => {
         const robotsList = document.getElementById("robotsList");
@@ -74,7 +74,7 @@ async function initializeRobot(event) {
     const macAddress = document.getElementById('macAddress').value;
 
     try {
-        const response = await fetch('/api/robotInitialize', {
+        const response = await fetch('/robotInitialize', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -105,7 +105,7 @@ async function initializeCommande(event) {
     const datetime = new Date().toISOString();
     
     try {
-        const response = await fetch('/api/commandeInitialize', {
+        const response = await fetch('/setinstructions', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',

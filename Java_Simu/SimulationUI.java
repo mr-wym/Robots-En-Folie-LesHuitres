@@ -63,7 +63,7 @@ public class SimulationUI extends JFrame {
 
     private void recupererCommandeDepuisServeur() {
         try {
-            URL url = new URL("http://localhost:8000/api/commandes");
+            URL url = new URL("http://localhost:8000/missions");
             HttpURLConnection con = (HttpURLConnection) url.openConnection();
             con.setRequestMethod("GET");
 

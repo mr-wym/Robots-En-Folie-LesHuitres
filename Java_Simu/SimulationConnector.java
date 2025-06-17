@@ -10,7 +10,7 @@ public class SimulationConnector {
             }
         """, mac, alias);
         try {
-            String response = ApiClient.sendPost(BASE_URL + "/api/robotInitialize", json);
+            String response = ApiClient.sendPost(BASE_URL + "/robotInitialize", json);
             System.out.println("Robot enregistré : " + response);
         } catch (Exception e) {
             System.err.println("Erreur enregistrement robot : " + e.getMessage());
@@ -27,7 +27,7 @@ public class SimulationConnector {
             }
         """, datetime, commande, mac, alias);
         try {
-            String response = ApiClient.sendPost(BASE_URL + "/api/commandeInitialize", json);
+            String response = ApiClient.sendPost(BASE_URL + "/setinstructions", json);
             System.out.println("Commande envoyée : " + response);
         } catch (Exception e) {
             System.err.println("Erreur envoi commande : " + e.getMessage());
@@ -36,7 +36,7 @@ public class SimulationConnector {
 
     public static void lireCommandes() {
         try {
-            String response = ApiClient.sendGet(BASE_URL + "/api/commandes");
+            String response = ApiClient.sendGet(BASE_URL + "/instructions");
             System.out.println("Commandes reçues : " + response);
         } catch (Exception e) {
             System.err.println("Erreur lecture commandes : " + e.getMessage());

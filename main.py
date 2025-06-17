@@ -1,12 +1,12 @@
 from fastapi import FastAPI
 from fastapi.staticfiles import StaticFiles
 from controller import mainController
-from controller.api import RobotController, CommandeController, TelemetryController
+from controller.api import RobotController, InstructionsController, TelemetryController
 from database import database
 
 app = FastAPI()
 app.include_router(RobotController.router)
-app.include_router(CommandeController.router)
+app.include_router(InstructionsController.router)
 app.include_router(TelemetryController.router)
 
 app.include_router(mainController.router)

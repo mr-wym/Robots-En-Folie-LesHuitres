@@ -10,3 +10,4 @@ async def root():
         html_content = file.read()
 
     return HTMLResponse(content=html_content)
+
