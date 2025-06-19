@@ -2,7 +2,7 @@ import java.awt.Color;
 import java.util.*;
 
 /**
- * Logique du simulateur : position sur 10 bases en cercle,
+ * Logique du simulateur : position sur 10 bases en cercle,
  * gestion des missions, activation de la pince, télémétrie.
  */
 public class RobotSimulator {
@@ -56,9 +56,13 @@ public class RobotSimulator {
         return stepIndex < missions.get(currentMissionIndex).size();
     }
 
-    /** Exécute une étape : déplacement ou activation de la pince. */
+    /** Exécute une étape : déplacement ou activation de la pince. */
     public void startNextStep() {
-        if (!hasNextStep()) return;
+        if (!hasNextStep()) {
+            // Plus d'étapes : on notifie la fin de cette mission
+            missionService.summary();
+            return;
+        }
 
         int target = missions.get(currentMissionIndex).get(stepIndex);
         if (position != target) {
@@ -69,6 +73,10 @@ public class RobotSimulator {
             pinceActive = !pinceActive;
             sendTelemetry("PICK");
             stepIndex++;
+            // Si on vient de finir la dernière étape :
+            if (!hasNextStep()) {
+                missionService.summary();
+            }
         }
     }
 

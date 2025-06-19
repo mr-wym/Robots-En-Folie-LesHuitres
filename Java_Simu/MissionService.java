@@ -2,7 +2,9 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 import java.util.*;
 
-/** Récupération des missions via l’API. */
+/**
+ * Récupération des missions via l’API et notification de fin de mission.
+ */
 public class MissionService {
     private final ApiClient api;
     private final String robotId;
@@ -20,21 +22,21 @@ public class MissionService {
         try {
             String body = api.get("/instructions?robot_id=" + robotId);
             JSONObject json = new JSONObject(body);
-            Object rows = json.get("rows");
-            JSONArray arr = rows instanceof String
-                ? new JSONArray((String) rows)
-                : (JSONArray) rows;
+            Object blocks = json.get("blocks");
+            JSONArray arr = blocks instanceof String
+                ? new JSONArray((String) blocks)
+                : (JSONArray) blocks;
 
             List<List<Integer>> missions = new ArrayList<>();
-            // Si tableau plat de nombres → une seule mission
             if (arr.length() > 0 && arr.get(0) instanceof Number) {
+                // un simple tableau de nombres → une seule mission
                 List<Integer> path = new ArrayList<>();
                 for (int i = 0; i < arr.length(); i++) {
                     path.add(arr.getInt(i));
                 }
                 missions.add(path);
             } else {
-                // Sinon, chaque sous-tableau devient une mission
+                // chaque sous-tableau devient une mission
                 for (int i = 0; i < arr.length(); i++) {
                     JSONArray sub = arr.getJSONArray(i);
                     List<Integer> path = new ArrayList<>();
@@ -48,6 +50,21 @@ public class MissionService {
         } catch (Exception ex) {
             ex.printStackTrace();
             return Collections.emptyList();
+        }
+    }
+
+    /**
+     * Envoie l'ID du robot au serveur pour signaler
+     * que la mission vient de se terminer.
+     */
+    public void summary() {
+        try {
+            JSONObject payload = new JSONObject()
+                .put("robot_id", robotId);
+            api.post("/summary", payload.toString());
+            System.out.println("➜ Mission terminée, robot_id envoyé : " + robotId);
+        } catch (Exception ex) {
+            ex.printStackTrace();
         }
     }
 }
