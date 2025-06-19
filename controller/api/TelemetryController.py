@@ -1,33 +1,33 @@
 from fastapi import APIRouter, Request
 from fastapi.responses import JSONResponse
 # from service.TelemetryService import fetchTelemetry
-from service.TelemetryService import fetchTelemetry, setTelemetryAndVerif, setSummaryAndVerif, setSummaryFinishAndVerif
+from service.TelemetryService import fetchTelemetry, setTelemetryAndVerif, setSummaryAndVerif
 
 router = APIRouter()
 @router.post("/telemetry")
 async def post_telemetry(request: Request):
+    print(f"Received telemetry data: {request}")
     data = await request.json()
     vitesse = data.get("vitesse")
-    distance_ultrason = data.get("distance_ultrason")
-    status_deplacement = data.get("status_deplacement")
-    ligne = data.get("ligne")
-    pince_active = data.get("pince_active")
-    robot_id = data.get("robot_id")
+    dist = data.get("distance_ultrasons")
+    statusDeplacement = data.get("statut_deplacement")
+    statusLigne = data.get("ligne")
+    pinceValue = data.get("statut_pince")
+    uuidNous = data.get("robot_id")
 
-    setTelemetryAndVerif(vitesse, distance_ultrason, status_deplacement, ligne, pince_active, robot_id)
+    setTelemetryAndVerif(vitesse, dist, statusDeplacement, statusLigne, pinceValue, uuidNous)
 
-    return {"message": "Telemetry set successfully"}
+    return {"message": "Telemetry ajouté"}
 
 
-router = APIRouter()
 @router.post("/summary")
 async def post_summary(request: Request):
     data = await request.json()
     robot_id = data.get("robot_id")
 
-    setSummaryFinishAndVerif(robot_id)
+    setSummaryAndVerif(robot_id)
 
-    return {"message": "Summary set successfully"}
+    return {"message": "Summary ajouté"}
 
 
 # @router.get("/gettelemetry")

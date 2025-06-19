@@ -13,7 +13,8 @@ def init_db():
         id INTEGER PRIMARY KEY,
             datetime TEXT NOT NULL,
             mission TEXT NOT NULL,
-            robot_id TEXT NOT NULL
+            robot_id TEXT NOT NULL,
+            isDone BOOLEAN DEFAULT FALSE
         )
     """)
             # id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -22,13 +23,14 @@ def init_db():
         CREATE TABLE IF NOT EXISTS TELEMETRY (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
             vitesse FLOAT NOT NULL,
-            distance_ultrason FLOAT NOT NULL,
-            status_deplacement TEXT NOT NULL,
-            ligne INTEGER NOT NULL,
-            pince_active BOOLEAN NOT NULL,
+            dist FLOAT NOT NULL,
+            statusDeplacement TEXT NOT NULL,
+            statusLigne INTEGER NOT NULL,
+            pinceValue BOOLEAN NOT NULL,
             robot_id TEXT NOT NULL
         )
     """)
+
 
     cursor.execute("""
         CREATE TABLE IF NOT EXISTS ROBOTS (
@@ -60,10 +62,11 @@ def init_db():
 
     # uuid = str(uuid4())
     uuidMrKrabs = "53d67923-704f-4b97-b6d4-64a0a04ca5de"
+    uuidMrKrabsSimu = "54d67923-704f-4b97-b6d4-64a0a04ca5de"
     uuidMaxenceLaFourmis = "72a1834d-98ef-4b46-87f5-5e4c4e82e39a"
     uuidGhostEyes = "24dcc3a8-3de8-0000-0000-000000000000"
     uuidPathFinder = "255f30bc-46f7-41d4-ba1d-db76a0afd7f7"
-    uuidRobotOSR = "efe16b56-45fa-47a3-8f05-04200828eea"
+    uuidRobotOSR = "efe16b56-45fa-47a3-8f05-04200828eea9"
     uuidPastaBot = "7f377006-cba5-5d50f-a058d-45c5ce970f10"
 
     print(f"UUID generated: {uuidMrKrabs}")
@@ -73,6 +76,7 @@ def init_db():
             INSERT INTO ROBOTS (robot_id, alias) VALUES (?, ?)
         """, [
             (uuidMrKrabs, "MrKrabs"),
+            (uuidMrKrabsSimu, "MrKrabsSimu"),
             (uuidMaxenceLaFourmis, "MaxenceLaFourmis"),
             (uuidGhostEyes, "GhostEyes"),
             (uuidPathFinder, "PathFinder"),

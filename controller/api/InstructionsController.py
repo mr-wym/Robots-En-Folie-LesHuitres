@@ -3,13 +3,20 @@ from fastapi.responses import JSONResponse
 from repository.InstructionsRepository import missionExists, setMissions
 from service.InstructionsService import fetchMission
 from repository.RobotRepository import getRobotIdAlias
+from datetime import datetime
 
 router = APIRouter()
 
 @router.get("/instructions")
 async def get_commandes_endpoint(robot_id: str):
-    print(f"robot_id = {robot_id} (type: {type(robot_id)})")
-    return {"rows": fetchMission(robot_id)}
+    print(f"robot_id = {robot_id}")
+    blocks = fetchMission(robot_id)
+    print("blok", blocks)
+
+    if blocks is None:
+        return JSONResponse(content={"error": "Aucune mission trouvée pour ce robot."})
+
+    return {"blocks": blocks}
 
 @router.post("/setinstructions")
 async def set_commandes_endpoint(request: Request):
@@ -27,6 +34,8 @@ async def set_commandes_endpoint(request: Request):
 
         print(f"macaddress after = {macAddress}")
 
+        if not datetime:
+            datetime = datetime.now().isoformat()
 
         if not datetime or not mission or not macAddress:
             return {"error": "datetime, mission et macAddress sont requis"}, 400

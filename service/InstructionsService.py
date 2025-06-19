@@ -5,8 +5,8 @@ import json
 
 def fetchMission(robot_id=None):
     rows = getMissions(robot_id)
-    rows = [json.loads(row[0]) for row in rows]
-    
+    # rows = [json.loads(row[0]) for row in rows]
+    print(rows)
     return rows
 
 

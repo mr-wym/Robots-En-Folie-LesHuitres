@@ -64,10 +64,8 @@ def preparationEnvoieRobot(macEntry, aliasEntry, labelRequest, updateDropdown_ca
     envoie(urlFinal, payload, labelRequest, updateDropdown_callback)
 
 def preparationEnvoieMission(checkpoints, alias, labelRequest, updateDropdown_callback):
-    # Construire la liste des missions à partir des checkpoints
-    mission_list = [selected_cube.get().split(" - ")[0] for (_, selected_cube) in checkpoints]
+    mission_list = [int(selected_cube.get().split(" - ")[0]) for (_, selected_cube) in checkpoints]
 
-    # Classe factice pour simuler l'interface attendue par la fonction envoie
     class MissionEntry:
         def get(self): return mission_list
         def delete(self, start, end): pass
@@ -84,10 +82,3 @@ def preparationEnvoieMission(checkpoints, alias, labelRequest, updateDropdown_ca
     urlFinal = urlBase + "setinstructions"
     mission_entry.delete(0, 'end')
     envoie(urlFinal, payload, labelRequest, updateDropdown_callback)
-
-# def formatMac(event, champMacAdress):
-#     contenu = champMacAdress.get()
-#     contenu = re.sub(r'[^0-9a-fA-F]', '', contenu)[:12]
-#     formate = ":".join([contenu[i:i+2] for i in range(0, len(contenu), 2)])
-#     champMacAdress.delete(0, 'end')
-#     champMacAdress.insert(0, formate.upper())
