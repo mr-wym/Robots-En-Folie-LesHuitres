@@ -1,38 +1,49 @@
-import java.io.*;
-import java.net.HttpURLConnection;
-import java.net.URL;
+import java.net.URI;
+import java.net.http.HttpClient;
+import java.net.http.HttpRequest;
+import java.net.http.HttpResponse;
 
+/**
+ * Client HTTP simple pour requêtes GET/POST JSON.
+ */
 public class ApiClient {
+    private final HttpClient client = HttpClient.newHttpClient();
+    private final String baseUrl;
 
-    public static String sendGet(String endpoint) throws IOException {
-        URL url = new URL(endpoint);
-        HttpURLConnection con = (HttpURLConnection) url.openConnection();
-        con.setRequestMethod("GET");
-
-        BufferedReader in = new BufferedReader(new InputStreamReader(con.getInputStream()));
-        StringBuilder response = new StringBuilder();
-        String line;
-        while ((line = in.readLine()) != null) response.append(line);
-        in.close();
-        return response.toString();
+    /**
+     * @param baseUrl URL racine des requêtes
+     */
+    public ApiClient(String baseUrl) {
+        this.baseUrl = baseUrl;
     }
 
-    public static String sendPost(String endpoint, String json) throws IOException {
-        URL url = new URL(endpoint);
-        HttpURLConnection con = (HttpURLConnection) url.openConnection();
-        con.setRequestMethod("POST");
-        con.setRequestProperty("Content-Type", "application/json; utf-8");
-        con.setDoOutput(true);
+    /**
+     * Requête GET HTTP.
+     * @param path Chemin de la requête
+     * @return Réponse du serveur
+     * @throws Exception En cas d'erreur HTTP
+     */
+    public String get(String path) throws Exception {
+        return client.send(
+            HttpRequest.newBuilder(URI.create(baseUrl + path)).GET().build(),
+            HttpResponse.BodyHandlers.ofString()
+        ).body();
+    }
 
-        try (OutputStream os = con.getOutputStream()) {
-            byte[] input = json.getBytes("utf-8");
-            os.write(input, 0, input.length);
-        }
-
-        BufferedReader in = new BufferedReader(new InputStreamReader(con.getInputStream(), "utf-8"));
-        StringBuilder response = new StringBuilder();
-        String line;
-        while ((line = in.readLine()) != null) response.append(line.trim());
-        return response.toString();
+    /**
+     * Requête POST HTTP avec données JSON.
+     * @param path Chemin de la requête
+     * @param json Données JSON à envoyer
+     * @return Réponse du serveur
+     * @throws Exception En cas d'erreur HTTP
+     */
+    public String post(String path, String json) throws Exception {
+        return client.send(
+            HttpRequest.newBuilder(URI.create(baseUrl + path))
+                .header("Content-Type", "application/json")
+                .POST(HttpRequest.BodyPublishers.ofString(json))
+                .build(),
+            HttpResponse.BodyHandlers.ofString()
+        ).body();
     }
 }
