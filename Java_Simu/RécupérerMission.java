@@ -5,11 +5,11 @@ import java.util.*;
 /**
  * Service pour récupérer les missions et notifier la fin de mission.
  */
-public class MissionService {
+public class RécupérerMission {
     private final ApiClient api;
     private final String robotId;
 
-    public MissionService(ApiClient api, String robotId) {
+    public RécupérerMission(ApiClient api, String robotId) {
         this.api = api;
         this.robotId = robotId;
     }
@@ -29,7 +29,7 @@ public class MissionService {
             if (arr.length() > 0 && arr.get(0) instanceof Number) {
                 missions.add(jsonArrayToList(arr));
             } else {
-                // Sinon, chaque sous-tableau est une mission
+                // Sinon, autre nombre est une liste de missions
                 for (int i = 0; i < arr.length(); i++) {
                     missions.add(jsonArrayToList(arr.getJSONArray(i)));
                 }

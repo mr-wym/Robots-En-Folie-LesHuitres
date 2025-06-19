@@ -4,32 +4,34 @@ import java.awt.*;
 /**
  * Interface graphique Swing pour le simulateur de robot.
  */
-public class SimulatorUI {
+public class Interface {
 
     /**
      * Affiche la fenêtre principale et lance la simulation.
      * @param logic Instance du simulateur de robot
      */
-    public static void show(RobotSimulator logic) {
+    public static void show(RobotSimu logic) {
         JFrame frame = new JFrame("Simulateur Robot");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
-        // Panel de dessin
+        // simu interface globale
         SimulationPanel panel = new SimulationPanel(logic);
         panel.setPreferredSize(new Dimension(600, 600));
 
-        // Label d'état
-        JLabel statusLabel = new JLabel("État : " + logic.getStatus());
+        // texte pour l'état et les dépôts
+        JLabel statusLabel = new JLabel("État : " + logic.getStatut());
+        JLabel depotLabel = new JLabel("Zone 4/5 : 0 cube(s) | Zone 8/9 : 0 cube(s)");
 
-        // Bouton unique
+        // Bouton pour charger et lancer la simulation
         JButton loadAndRun = new JButton("Charger & Lancer");
 
-        // Timer toutes les 3 secondes
-        Timer timer = new Timer(3000, e -> {
-            if (logic.hasNextStep()) {
-                logic.startNextStep();
+        // Timer toutes les 1,5 secondes
+        Timer timer = new Timer(1500, e -> {
+            if (logic.aEtapeSuivante()) {
+                logic.executerEtape();
                 panel.repaint();
-                statusLabel.setText("État : " + logic.getStatus());
+                statusLabel.setText("État : " + logic.getStatut());
+                depotLabel.setText("Zone 4/5 : " + logic.getNbCubesZoneA() + " cube(s) | Zone 8/9 : " + logic.getNbCubesZoneB() + " cube(s)");
             } else {
                 statusLabel.setText("État : Terminé");
                 ((Timer)e.getSource()).stop();
@@ -38,9 +40,10 @@ public class SimulatorUI {
         timer.setInitialDelay(0);
 
         loadAndRun.addActionListener(e -> {
-            logic.fetchMissions();
+            logic.chargerMissions();
             JOptionPane.showMessageDialog(frame, logic.getMissions().size() + " mission(s) chargée(s)");
-            statusLabel.setText("État : " + logic.getStatus());
+            statusLabel.setText("État : " + logic.getStatut());
+            depotLabel.setText("Zone 4/5 : " + logic.getNbCubesZoneA() + " cube(s) | Zone 8/9 : " + logic.getNbCubesZoneB() + " cube(s)");
             timer.start();
         });
 
@@ -48,6 +51,7 @@ public class SimulatorUI {
         JPanel controls = new JPanel();
         controls.add(loadAndRun);
         controls.add(statusLabel);
+        controls.add(depotLabel);
 
         frame.add(controls, BorderLayout.NORTH);
         frame.add(panel, BorderLayout.CENTER);
@@ -60,13 +64,13 @@ public class SimulatorUI {
      * Panel interne pour dessiner le cercle, les bases et le robot.
      */
     private static class SimulationPanel extends JPanel {
-        private final RobotSimulator logic;
+        private final RobotSimu logic;
 
         /**
          * Constructeur du panel de simulation.
          * @param logic Instance du simulateur de robot
          */
-        SimulationPanel(RobotSimulator logic) { this.logic = logic; }
+        SimulationPanel(RobotSimu logic) { this.logic = logic; }
 
         @Override
         protected void paintComponent(Graphics g) {
@@ -82,8 +86,8 @@ public class SimulatorUI {
             g2.drawOval(cx-r, cy-r, r*2, r*2);
 
             // Bases et numéros
-            for (int i = 1; i <= RobotSimulator.NUM_POS; i++) {
-                double ang = 2*Math.PI*(i-1)/RobotSimulator.NUM_POS - Math.PI/2;
+            for (int i = 1; i <= RobotSimu.NB_POSITIONS; i++) {
+                double ang = 2*Math.PI*(i-1)/RobotSimu.NB_POSITIONS - Math.PI/2;
                 int bx = cx + (int)(r*Math.cos(ang));
                 int by = cy + (int)(r*Math.sin(ang));
                 g2.setColor(logic.getBaseColor(i));
@@ -102,7 +106,7 @@ public class SimulatorUI {
 
             // Robot
             int pos = logic.getPosition();
-            double angR = 2*Math.PI*(pos-1)/RobotSimulator.NUM_POS - Math.PI/2;
+            double angR = 2*Math.PI*(pos-1)/RobotSimu.NB_POSITIONS - Math.PI/2;
             int rx = cx + (int)(r*Math.cos(angR)) - 12;
             int ry = cy + (int)(r*Math.sin(angR)) - 12;
             g2.setColor(Color.RED);
