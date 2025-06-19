@@ -3,7 +3,7 @@ import org.json.JSONObject;
 import java.util.*;
 
 /**
- * Récupération des missions via l’API et notification de fin de mission.
+ * Service pour récupérer les missions et notifier la fin de mission.
  */
 public class MissionService {
     private final ApiClient api;
@@ -15,52 +15,54 @@ public class MissionService {
     }
 
     /**
-     * Renvoie une liste de missions ;
-     * chaque mission est une liste de positions (1..10).
+     * Récupère la liste des missions.
+     * Chaque mission est une liste d'entiers.
      */
     public List<List<Integer>> fetch() {
+        List<List<Integer>> missions = new ArrayList<>();
         try {
             String body = api.get("/instructions?robot_id=" + robotId);
             JSONObject json = new JSONObject(body);
-            Object blocks = json.get("blocks");
-            JSONArray arr = blocks instanceof String
-                ? new JSONArray((String) blocks)
-                : (JSONArray) blocks;
+            JSONArray arr = getBlocksAsArray(json.get("blocks"));
 
-            List<List<Integer>> missions = new ArrayList<>();
+            // Si le premier élément est un nombre, c'est une seule mission
             if (arr.length() > 0 && arr.get(0) instanceof Number) {
-                // un simple tableau de nombres → une seule mission
-                List<Integer> path = new ArrayList<>();
-                for (int i = 0; i < arr.length(); i++) {
-                    path.add(arr.getInt(i));
-                }
-                missions.add(path);
+                missions.add(jsonArrayToList(arr));
             } else {
-                // chaque sous-tableau devient une mission
+                // Sinon, chaque sous-tableau est une mission
                 for (int i = 0; i < arr.length(); i++) {
-                    JSONArray sub = arr.getJSONArray(i);
-                    List<Integer> path = new ArrayList<>();
-                    for (int j = 0; j < sub.length(); j++) {
-                        path.add(sub.getInt(j));
-                    }
-                    missions.add(path);
+                    missions.add(jsonArrayToList(arr.getJSONArray(i)));
                 }
             }
-            return missions;
         } catch (Exception ex) {
             ex.printStackTrace();
-            return Collections.emptyList();
         }
+        return missions;
+    }
+
+    // Convertit un objet blocks en JSONArray
+    private JSONArray getBlocksAsArray(Object blocks) {
+        if (blocks instanceof String) {
+            return new JSONArray((String) blocks);
+        }
+        return (JSONArray) blocks;
+    }
+
+    // Convertit un JSONArray en List<Integer>
+    private List<Integer> jsonArrayToList(JSONArray arr) {
+        List<Integer> list = new ArrayList<>();
+        for (int i = 0; i < arr.length(); i++) {
+            list.add(arr.getInt(i));
+        }
+        return list;
     }
 
     /**
-     * Envoie l'ID du robot au serveur pour signaler
-     * que la mission vient de se terminer.
+     * Notifie le serveur que la mission est terminée.
      */
     public void summary() {
         try {
-            JSONObject payload = new JSONObject()
-                .put("robot_id", robotId);
+            JSONObject payload = new JSONObject().put("robot_id", robotId);
             api.post("/summary", payload.toString());
             System.out.println("➜ Mission terminée, robot_id envoyé : " + robotId);
         } catch (Exception ex) {

@@ -24,11 +24,10 @@ public class ApiClient {
      * @throws Exception En cas d'erreur HTTP
      */
     public String get(String path) throws Exception {
-        HttpRequest req = HttpRequest.newBuilder()
-            .uri(URI.create(baseUrl + path))
-            .GET()
-            .build();
-        return client.send(req, HttpResponse.BodyHandlers.ofString()).body();
+        return client.send(
+            HttpRequest.newBuilder(URI.create(baseUrl + path)).GET().build(),
+            HttpResponse.BodyHandlers.ofString()
+        ).body();
     }
 
     /**
@@ -39,11 +38,12 @@ public class ApiClient {
      * @throws Exception En cas d'erreur HTTP
      */
     public String post(String path, String json) throws Exception {
-        HttpRequest req = HttpRequest.newBuilder()
-            .uri(URI.create(baseUrl + path))
-            .header("Content-Type", "application/json; charset=utf-8")
-            .POST(HttpRequest.BodyPublishers.ofString(json))
-            .build();
-        return client.send(req, HttpResponse.BodyHandlers.ofString()).body();
+        return client.send(
+            HttpRequest.newBuilder(URI.create(baseUrl + path))
+                .header("Content-Type", "application/json")
+                .POST(HttpRequest.BodyPublishers.ofString(json))
+                .build(),
+            HttpResponse.BodyHandlers.ofString()
+        ).body();
     }
 }
