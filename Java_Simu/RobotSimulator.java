@@ -3,11 +3,14 @@ import java.util.*;
 
 /**
  * Logique du simulateur : position sur 10 bases en cercle,
- * gestion des missions, activation de la pince, télémétrie.
+ * gestion des missions, activation de la pince, dépôt automatique dans la base la plus proche,
+ * et télémétrie.
  */
 public class RobotSimulator {
     /** Nombre de positions sur le cercle. */
     public static final int NUM_POS = 10;
+    /** Positions considérées comme bases pour le dépôt. */
+    private static final List<Integer> BASE_POSITIONS = Arrays.asList(4, 5, 8, 9);
 
     private final ApiClient api;
     private final String robotId;
@@ -32,11 +35,6 @@ public class RobotSimulator {
         10, Color.GREEN
     );
 
-    /**
-     * Constructeur du simulateur.
-     * @param api Client API pour les requêtes réseau
-     * @param robotId Identifiant du robot
-     */
     public RobotSimulator(ApiClient api, String robotId) {
         this.api = api;
         this.robotId = robotId;
@@ -56,45 +54,48 @@ public class RobotSimulator {
         return stepIndex < missions.get(currentMissionIndex).size();
     }
 
-    /** Exécute une étape : déplacement ou activation de la pince. */
+    /**
+     * Exécute une étape : déplacement ou saisie + dépôt automatique.
+     */
     public void startNextStep() {
         if (!hasNextStep()) {
-            // Plus d'étapes : on notifie la fin de cette mission
             missionService.summary();
             return;
         }
 
         int target = missions.get(currentMissionIndex).get(stepIndex);
         if (position != target) {
+            // Déplacement vers la cible
             int dir = shortestDirection(position, target);
             position = (position + dir - 1 + NUM_POS) % NUM_POS + 1;
             sendTelemetry("MOVE");
         } else {
-            pinceActive = !pinceActive;
-            sendTelemetry("PICK");
+            // Saisie et dépôt automatique
+            if (!pinceActive) {
+                // On ferme la pince (on saisit)
+                pinceActive = true;
+                sendTelemetry("PICK");
+                // Calcul de la base la plus proche
+                int depositBase = findNearestBase(position);
+                // On se déplace vers cette base
+                while (position != depositBase) {
+                    int dir = shortestDirection(position, depositBase);
+                    position = (position + dir - 1 + NUM_POS) % NUM_POS + 1;
+                    sendTelemetry("MOVE");
+                }
+                // On ouvre la pince (on dépose)
+                pinceActive = false;
+                sendTelemetry("DROP");
+            }
+            // Passage à l'étape suivante
             stepIndex++;
-            // Si on vient de finir la dernière étape :
             if (!hasNextStep()) {
                 missionService.summary();
             }
         }
     }
 
-    /** Retourne la position actuelle du robot. */
-    public int getPosition()             { return position; }
-    /** Retourne l’état de la pince. */
-    public boolean isPinceActive()       { return pinceActive; }
-    /** Retourne la liste des missions. */
-    public List<List<Integer>> getMissions() { return missions; }
-    /** Retourne la couleur d’une base. */
-    public Color getBaseColor(int i)     { return baseColors.getOrDefault(i, Color.LIGHT_GRAY); }
-
-    /**
-     * Calcule la direction la plus courte entre deux positions.
-     * @param from Position de départ
-     * @param to Position d’arrivée
-     * @return 1 pour sens horaire, -1 pour antihoraire
-     */
+    /** Calcule la direction la plus courte entre deux positions. */
     private int shortestDirection(int from, int to) {
         int f = from - 1, t = to - 1;
         int cw = (t - f + NUM_POS) % NUM_POS;
@@ -102,10 +103,21 @@ public class RobotSimulator {
         return cw <= ccw ? 1 : -1;
     }
 
-    /**
-     * Envoie la télémétrie à l’API.
-     * @param status Statut du robot ("MOVE" ou "PICK")
-     */
+    /** Trouve la base la plus proche de la position donnée. */
+    private int findNearestBase(int pos) {
+        int best = BASE_POSITIONS.get(0);
+        int minDist = Math.abs(pos - best);
+        for (int base : BASE_POSITIONS) {
+            int dist = Math.abs(pos - base);
+            if (dist < minDist) {
+                minDist = dist;
+                best = base;
+            }
+        }
+        return best;
+    }
+
+    /** Envoie la télémétrie à l’API. */
     private void sendTelemetry(String status) {
         Telemetry t = new Telemetry(1, robotId, status, pinceActive, 1.0, 0.0);
         try {
@@ -115,4 +127,10 @@ public class RobotSimulator {
             e.printStackTrace();
         }
     }
+
+    // Getters
+    public int getPosition()          { return position; }
+    public boolean isPinceActive()    { return pinceActive; }
+    public List<List<Integer>> getMissions() { return missions; }
+    public Color getBaseColor(int i)  { return baseColors.getOrDefault(i, Color.LIGHT_GRAY); }
 }
