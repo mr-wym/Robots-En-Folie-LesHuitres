@@ -1,12 +1,12 @@
 from fastapi import APIRouter, Request
 from fastapi.responses import JSONResponse
-# from service.TelemetryService import fetchTelemetry
-from service.TelemetryService import fetchTelemetry, setTelemetryAndVerif, setSummaryAndVerif
+from service.TelemetryService import setTelemetryAndVerif, setSummaryAndVerif
 
 router = APIRouter()
+
+# Route /telemetry pour que le robot puisse envoyer ca telemetry toutes les seondes 
 @router.post("/telemetry")
 async def post_telemetry(request: Request):
-    print(f"Received telemetry data: {request}")
     data = await request.json()
     vitesse = data.get("vitesse")
     dist = data.get("distance_ultrasons")
@@ -19,7 +19,7 @@ async def post_telemetry(request: Request):
 
     return {"message": "Telemetry ajouté"}
 
-
+# Route /summary pour que le robot puisse envoyer son uuid pour renseigner que la mission est finie
 @router.post("/summary")
 async def post_summary(request: Request):
     data = await request.json()
@@ -28,6 +28,8 @@ async def post_summary(request: Request):
     setSummaryAndVerif(robot_id)
 
     return {"message": "Summary ajouté"}
+
+
 
 
 # @router.get("/gettelemetry")

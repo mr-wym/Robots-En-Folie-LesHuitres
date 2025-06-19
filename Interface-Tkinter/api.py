@@ -1,9 +1,10 @@
 import requests
 from datetime import datetime
-import re
+# Fichier qui contient toutes les fonctions pour les contacts avec l'api
 
-urlBase = "http://localhost:8000/"
+urlBase = "http://localhost:8000/" # URL de l'api
 
+# Fonction qui envoie a l'api
 def envoie(urlFinal, payload, labelRequest, updateDropdown_callback):
     try:
         response = requests.post(urlFinal, json=payload)
@@ -19,9 +20,10 @@ def envoie(urlFinal, payload, labelRequest, updateDropdown_callback):
     except Exception as e:
         print(f"Erreur de connexion à l'API : {e}")
         labelRequest.config(text="Connexion à l'API échouée", fg="red")
-
+    
     updateDropdown_callback()
 
+# Fonction qui récupère la liste des alias des robots
 def getRobotListAlias():
     try:
         response = requests.get(urlBase + "robots")
@@ -35,6 +37,7 @@ def getRobotListAlias():
         print(f"Erreur connexion API robots : {e}")
         return []
 
+# Fonction qui récupère la telemetrie du robot
 def getTelemetry():
     try:
         response = requests.get(urlBase + "telemetry")
@@ -48,21 +51,24 @@ def getTelemetry():
         print(f"Erreur connexion API telemetry : {e}")
         return []
 
-
-def preparationEnvoieRobot(macEntry, aliasEntry, labelRequest, updateDropdown_callback):
-    macAddress = macEntry.get()
-    macEntry.delete(0, 'end')
+# Fonction de préparation des données avant l'envoie
+def preparationEnvoieRobot(uuidEntry, aliasEntry, labelRequest, updateDropdown_callback):
+    uuid = uuidEntry.get()
+    uuidEntry.delete(0, 'end')
     aliasName = aliasEntry.get()
     aliasEntry.delete(0, 'end')
 
     payload = {
-        "macAddress": macAddress,
+        "uuid": uuid,
         "alias": aliasName if aliasName else ""
     }
+
+    print(f"Donnée envoyé : {payload}")
 
     urlFinal = urlBase + "robotInitialize"
     envoie(urlFinal, payload, labelRequest, updateDropdown_callback)
 
+# Fonction de préparation des données avant l'envoie
 def preparationEnvoieMission(checkpoints, alias, labelRequest, updateDropdown_callback):
     mission_list = [int(selected_cube.get().split(" - ")[0]) for (_, selected_cube) in checkpoints]
 
@@ -77,7 +83,7 @@ def preparationEnvoieMission(checkpoints, alias, labelRequest, updateDropdown_ca
         "alias": alias if alias else ""
     }
     
-    print(f"Payload envoyé : {payload}")
+    print(f"Donnée envoyé : {payload}")
 
     urlFinal = urlBase + "setinstructions"
     mission_entry.delete(0, 'end')

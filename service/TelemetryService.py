@@ -1,20 +1,23 @@
 from repository.TelemetryRepository import getTelemetry, setTelemetry, updateSummary
-# ici mettre regle métier pour les valeurs, commandes et robots
 
+# Fonction qui appelle getTelemetry qui va récupérer la telemetrie
 def fetchTelemetry():
     rows = getTelemetry()
     return [
         {
             "id": row[0],
-            "speed": row[1],
+            "vitesse": row[1],
             "distance": row[2],
+            "statut_deplacement": row[3],
+            "statut_ligne": row[4],
+            "status_pince": row[5],
+            "robot_id": row[6]
         } for row in rows
     ]
     
-
+# Fonction qui vérifie le bon format des données 
 def setTelemetryAndVerif(vitesse, dist, statusDeplacement, statusLigne, pinceValue, uuidNous):
 
-    
     if not isinstance(vitesse, (int, float)):
         raise ValueError("Vitesse must be a number")
     if not isinstance(dist, (int, float)):
@@ -30,7 +33,7 @@ def setTelemetryAndVerif(vitesse, dist, statusDeplacement, statusLigne, pinceVal
 
     setTelemetry(vitesse, dist, statusDeplacement, statusLigne, pinceValue, uuidNous)
 
-
+# Fonction qui vérifie le format des données 
 def setSummaryAndVerif(robot_id):
     if not isinstance(robot_id, str):
         raise ValueError("Robot ID must be a string")
@@ -38,17 +41,3 @@ def setSummaryAndVerif(robot_id):
     print(f"Setting summary for robot {robot_id}")
     
     updateSummary(robot_id)
-
-# def setSummaryFinishAndVerif(robot_id):
-#     if not isinstance(robot_id, str):
-#         raise ValueError("Robot ID must be a string")
-    
-#     # Here you would implement the logic to set the summary for the robot
-#     # For now, we will just print a message
-#     print(f"Setting summary finish for robot {robot_id}")
-    
-#     # In a real application, you would save this summary to a database or perform some other action
-#     # For example:
-#     # saveSummaryToDatabase(robot_id)
-
-#     updateSummary(robot_id)

@@ -2,17 +2,16 @@ from database.database import connectToDb
 from repository.InstructionsRepository import getMissionId
 
 
-# fonction qui récupère les valeurs pour le robot dans la bd
+# Fpnction qui récupère les telemetry 
 def getTelemetry():
     conn = connectToDb()
     cursor = conn.cursor()
     cursor.execute("SELECT * FROM TELEMETRY")
     rows = cursor.fetchall()
     conn.close()
-# mettre ici directement le json
     return rows
 
-# fonction qui récupère les valeurs pour le robot dans la bd selon le robot_id
+# Fonction qui récupère les telemetry pour le robot selon le robot_id
 def getTelemetryById(robot_id):
     conn = connectToDb()
     cursor = conn.cursor()
@@ -21,10 +20,8 @@ def getTelemetryById(robot_id):
     conn.close()
     return rows
 
-# fonction qui initialise les valeurs pour le robot dans la bd
-# def setTelemetry(vitesse, distance_ultrason, status_deplacement, ligne, pince_active, robot_id):
+# Fonction qui initialise les telemetry pour le robot dans la bd
 def setTelemetry(vitesse, dist, statusDeplacement, statusLigne, pinceValue, uuidNous):
-
     conn = connectToDb()
     cursor = conn.cursor()
     cursor.execute("""
@@ -34,6 +31,7 @@ def setTelemetry(vitesse, dist, statusDeplacement, statusLigne, pinceValue, uuid
     conn.commit()
     conn.close()
 
+# Fonction qui met a jour la mission pour la passer a fait quand elle est finie
 def updateSummary(robot_id):
     mission_id = getMissionId(robot_id)
     print("updateSummary : ", mission_id)

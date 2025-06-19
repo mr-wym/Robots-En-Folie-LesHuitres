@@ -1,7 +1,7 @@
 from database.database import connectToDb
 
 
-# fonction qui récupère les robots dans la bd
+# Fonction qui récupère les robots dans la bd
 def getRobots():
     conn = connectToDb()
     cursor = conn.cursor()
@@ -11,7 +11,7 @@ def getRobots():
 
     return rows
 
-# fonction qui initialise les robots dans la bd
+# Fonction qui initialise les robots dans la bd
 def setRobots(robot_id, alias):
     conn = connectToDb()
     cursor = conn.cursor()
@@ -21,7 +21,7 @@ def setRobots(robot_id, alias):
     conn.commit()
     conn.close()
 
-# fonction qui vérifier si l'adresse max existe déjà dans la bd
+# Fonction qui vérifier si l'adresse max existe déjà dans la bd
 def robotIdExists(robotId, alias=None):
     conn = connectToDb()
     cursor = conn.cursor()
@@ -32,19 +32,8 @@ def robotIdExists(robotId, alias=None):
     exists = cursor.fetchone() is not None
     conn.close()
     return exists
-    # peut être au dessus rajouter le truc qui vérifier si l'alias existe déjà dans la bd
-
-# def getRobotIdAlias(alias):
-#     conn = connectToDb()
-#     cursor = conn.cursor()
-#     cursor.execute("SELECT macAddress FROM ROBOTS WHERE alias = ?", (alias,))
-#     macAddress = cursor.fetchall()
-#     conn.close()
-#     if macAddress:
-#         return macAddress[0]
-
-#     return None
-
+    
+# Fonction qui récupère l'id du robot en fonction de son alias 
 def getRobotIdAlias(alias):
     conn = connectToDb()
     try: 
